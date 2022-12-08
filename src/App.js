@@ -1,24 +1,123 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { useState } from "react";
+import { Routes, Route } from "react-router-dom";
+
+import "./App.css";
+import Attendance from "./components/Attendance";
+import Login from "./components/Login";
+import Name from "./components/SignUpForm/Name";
+import Contact from "./components/SignUpForm/Contact";
+import Password from "./components/SignUpForm/Password";
 
 function App() {
+  const [step, setstep] = useState(1);
+
+  const [formData, setFormData] = useState({
+    firstName: "",
+    lastName: "",
+    phoneNumber: "",
+    email: "",
+    password: "",
+  });
+
+  const nextStep = () => {
+    setstep(step + 1);
+  };
+
+  const prevStep = () => {
+    setstep(step - 1);
+  };
+
+  const handleInputData = (input) => (e) => {
+    const { value } = e.target;
+
+    setFormData((prevState) => ({
+      ...prevState,
+      [input]: value,
+    }));
+  };
+
+  switch (step) {
+    
+    case 1:
+      return (
+        <div>
+          <Name
+            nextStep={nextStep}
+            handleFormData={handleInputData}
+            values={formData}
+          />
+        </div>
+      );
+    case 2:
+      return (
+        <div>
+          <Contact
+            nextStep={nextStep}
+            prevStep={prevStep}
+            handleFormData={handleInputData}
+            values={formData}
+          />
+        </div>
+      );
+    case 3:
+      return (
+        <div>
+          <Password
+            nextStep={nextStep}
+            prevStep={prevStep}
+            handleFormData={handleInputData}
+            values={formData}
+          />
+        </div>
+      );
+     
+        
+  }
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Routes>
+      <Route
+        exact
+        path="/attendance"
+        element={
+          <Attendance
+            nextStep={nextStep}
+            handleFormData={handleInputData}
+            values={formData}
+          />
+        }
+      >
+       
+      </Route>
+      <Route
+        exact
+        path="/login"
+        element={
+          <Login
+            nextStep={nextStep}
+            handleFormData={handleInputData}
+            values={formData}
+          />
+        }
+      >
+       
+      </Route>
+      <Route
+        exact
+        path="/"
+        element={
+          <Name
+            nextStep={nextStep}
+            handleFormData={handleInputData}
+            values={formData}
+          />
+        }
+      >
+
+      </Route>
+      
+   
+    </Routes>
   );
 }
 
